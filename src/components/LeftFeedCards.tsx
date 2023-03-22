@@ -1,20 +1,17 @@
 import React, { useEffect } from "react";
 import { Card, ListGroup, ListGroupItem } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { fetchMyProfileAction } from "../actions";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 
 const LeftFeedCard = () => {
-  const { userID } = useParams();
   const profile = useAppSelector((state) => state.myProfile.results);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (userID !== undefined) {
-      dispatch(fetchMyProfileAction(userID));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }
+    dispatch(fetchMyProfileAction());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -34,7 +31,7 @@ const LeftFeedCard = () => {
         <Card.Body id="leftCardBody">
           <div>
             <Card.Title>
-              <Link to={"/profile"}>
+              <Link to={`/users/${process.env.REACT_APP_USER_ID}`}>
                 <span
                   style={{
                     lineHeight: "24px",

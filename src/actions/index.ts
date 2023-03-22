@@ -30,12 +30,12 @@ export const fetchAllProfilesAction = () => {
     }
   };
 };
-
-export const fetchExperienceAction = (userID: String) => {
+export const fetchExperienceAction = () => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        process.env.REACT_APP_BE_URL + `/users/${userID}/experiences/`
+        process.env.REACT_APP_BE_URL +
+          `/users/${process.env.REACT_APP_USER_ID}/experiences/`
       );
 
       if (response.ok) {
@@ -53,22 +53,20 @@ export const fetchExperienceAction = (userID: String) => {
   };
 };
 
-export const postJobAction = (
-  job: {
-    role: string;
-    company: string;
-    startDate: string;
-    endDate: string;
-    stillWorkingHere: boolean;
-    description: string;
-    area: string;
-  },
-  userID: String
-) => {
+export const postJobAction = (job: {
+  role: string;
+  company: string;
+  startDate: string;
+  endDate: string;
+  stillWorkingHere: boolean;
+  description: string;
+  area: string;
+}) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        process.env.REACT_APP_BE_URL + `/users/${userID}/experiences/`,
+        process.env.REACT_APP_BE_URL +
+          `/users/${process.env.REACT_APP_USER_ID}/experiences/`,
         {
           method: "POST",
           body: JSON.stringify(job),
@@ -91,11 +89,13 @@ export const postJobAction = (
   };
 };
 
-export const deleteJobAction = (userID: string, expId: String) => {
+export const deleteJobAction = (expId: string) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        process.env.REACT_APP_BE_URL + `/users/${userID}/experiences/` + expId,
+        process.env.REACT_APP_BE_URL +
+          `/users/${process.env.REACT_APP_USER_ID}/experiences/` +
+          expId,
         {
           method: "DELETE",
         }
@@ -112,14 +112,11 @@ export const deleteJobAction = (userID: string, expId: String) => {
   };
 };
 
-export const fetchMyProfileAction = (userID: string) => {
+export const fetchMyProfileAction = () => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        process.env.REACT_APP_BE_URL + `/users/${userID}`,
-        {
-          method: "GET",
-        }
+        process.env.REACT_APP_BE_URL + `/users/${process.env.REACT_APP_USER_ID}`
       );
       if (response.ok) {
         let myProfile = await response.json();
@@ -152,14 +149,15 @@ export const editJobAction = (
     description: string;
     area: string;
   },
-  userID: string,
   expId: string
 ) => {
   return async (dispatch: Dispatch) => {
     try {
       // console.log(id);
       let response = await fetch(
-        process.env.REACT_APP_BE_URL + `/users/${userID}/experiences/` + expId,
+        process.env.REACT_APP_BE_URL +
+          `/users/${process.env.REACT_APP_USER_ID}/experiences/` +
+          expId,
         {
           method: "PUT",
           body: JSON.stringify(job),
@@ -180,20 +178,18 @@ export const editJobAction = (
   };
 };
 
-export const editMyProfileAction = (
-  editProfile: {
-    name: string;
-    surname: string;
-    area: string;
-    image: string;
-    title: string;
-  },
-  userID: string
-) => {
+export const editMyProfileAction = (editProfile: {
+  name: string;
+  surname: string;
+  area: string;
+  image: string;
+  title: string;
+}) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        process.env.REACT_APP_BE_URL + `/users/${userID}`,
+        process.env.REACT_APP_BE_URL +
+          `/users/${process.env.REACT_APP_USER_ID}`,
         {
           method: "PUT",
           body: JSON.stringify(editProfile),
@@ -214,11 +210,12 @@ export const editMyProfileAction = (
   };
 };
 
-export const editBioAction = (about: { bio: string }, userID: string) => {
+export const editBioAction = (about: { bio: string }) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        process.env.REACT_APP_BE_URL + `/users/${userID}`,
+        process.env.REACT_APP_BE_URL +
+          `/users/${process.env.REACT_APP_USER_ID}`,
         {
           method: "PUT",
           body: JSON.stringify(about),
@@ -241,13 +238,11 @@ export const editBioAction = (about: { bio: string }, userID: string) => {
 export const fetchPostsAction = () => {
   return async (dispatch: Dispatch) => {
     try {
-      let response = await fetch(process.env.REACT_APP_BE_URL + `/posts`, {
-        method: "GET",
-      });
+      let response = await fetch(process.env.REACT_APP_BE_URL + `/posts`);
       if (response.ok) {
         let post = await response.json();
-        // const posts = post.slice(-20) as IAllPosts[];
-        dispatch({ type: GET_POST, payload: post });
+        const posts = post.slice(-20) as IAllPosts[];
+        dispatch({ type: GET_POST, payload: posts });
       } else {
         console.log("Error");
       }

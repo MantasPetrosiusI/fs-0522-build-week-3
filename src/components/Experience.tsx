@@ -20,6 +20,7 @@ import {
 import { useState } from "react";
 import { IExperience } from "../interfaces/IExperience";
 import { parseISO, format } from "date-fns";
+import { Link } from "react-router-dom";
 
 let expToEdit: string;
 let newexpID: string;
@@ -70,41 +71,33 @@ const Experience = () => {
       setFileForNewExp(null);
     }
   };
+
   const editJob = async (id: string) => {
     let jobtoEdit = exp.find((j: IExperience) => j._id === id);
 
     setJob(jobtoEdit);
     expToEdit = id;
   };
-  let prof = useAppSelector((state) => state.myProfile.results);
-  let userID = prof._id;
 
   const handleSubmit2 = async (
     e: React.MouseEvent<HTMLElement, MouseEvent>
   ) => {
     e.preventDefault();
-    setChanged(true);
     if (file) {
-      handleImageUpload(file, expToEdit, userID);
+      handleImageUpload(file, expToEdit);
     }
 
-    await dispatch(editJobAction(job, expToEdit, userID));
-
+    await dispatch(editJobAction(job, expToEdit));
     handleClose2();
   };
 
-  const handleImageUpload = async (
-    file: any,
-    expId: string,
-    userID: string
-  ) => {
+  const handleImageUpload = async (file: any, expId: string) => {
     try {
       const formData = new FormData();
-      formData.append("expImg", file);
+      formData.append("experience", file);
 
       let response = await fetch(
-        process.env.REACT_APP_BE_URL +
-          `/users/${userID}/experiences/${expId}/image`,
+        ` ${process.env.REACT_APP_BE_URL}/users/${process.env.REACT_APP_USER_ID}/experiences/${expId}/image`,
 
         {
           method: "POST",
@@ -114,7 +107,7 @@ const Experience = () => {
       console.log(response);
       if (response.ok) {
         console.log("You made it!");
-        console.log(job);
+        setChanged(true);
       } else {
         console.log("Try harder!");
       }
@@ -146,16 +139,14 @@ const Experience = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchExperienceAction(userID));
+    dispatch(fetchExperienceAction());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [changed, setChanged] = useState(false);
 
   useEffect(() => {
-    handleImageUpload(file, expToEdit, userID);
-    NewExpImageUpload(fileForNewExp, newexpID, userID);
-    dispatch(fetchExperienceAction(userID));
+    dispatch(fetchExperienceAction());
     setTimeout(() => {
       setChanged(false);
     }, 2000);
@@ -172,28 +163,23 @@ const Experience = () => {
     setShowDescription(false);
     setShowLoc(false);
 
-    let newexp = await dispatch(postJobAction(job, userID));
+    let newexp = await dispatch(postJobAction(job));
     newexpID = newexp._id;
     if (file) {
-      NewExpImageUpload(fileForNewExp, newexpID, userID);
+      NewExpImageUpload(fileForNewExp, newexpID);
     }
 
     setChanged(true);
     handleClose();
   };
 
-  const NewExpImageUpload = async (
-    fileForNewExp: any,
-    newexpID: string,
-    userID: string
-  ) => {
+  const NewExpImageUpload = async (fileForNewExp: any, newexpID: string) => {
     try {
       const formData = new FormData();
-      formData.append("imgExp", fileForNewExp);
+      formData.append("experience", fileForNewExp);
 
       let response = await fetch(
-        process.env.REACT_APP_BE_URL +
-          `/users/${userID}/experiences/${newexpID}/image`,
+        ` ${process.env.REACT_APP_BE_URL}/users/${process.env.REACT_APP_USER_ID}/experiences/${newexpID}/image`,
 
         {
           method: "POST",
@@ -237,9 +223,6 @@ const Experience = () => {
                       <Form.Label className="place">Title*</Form.Label>
                       <Form.Control
                         className="inputs mb-n1"
-                        // className={
-                        //   job.role.length === 0 ? "inputs error" : "inputs"
-                        // }
                         type="text"
                         placeholder="Ex:Retail Sales Manager"
                         value={job.role}
@@ -407,7 +390,12 @@ const Experience = () => {
               </Modal>
             </div>
           </div>
-
+          <Link
+            to={`${process.env.REACT_APP_BE_URL}/users/${process.env.REACT_APP_USER_ID}/experiences/CSV`}
+            className="pt-4 mb-n1 px-4"
+          >
+            Download CSV File
+          </Link>
           <ListGroup className="mt-4 list-exp ">
             {exp.map((ex: IExperience) => (
               <>
@@ -418,7 +406,11 @@ const Experience = () => {
                   >
                     <div>
                       <img
-                        src={ex.image ? ex.image : ""}
+                        src={
+                          ex.image
+                            ? ex.image
+                            : "https://cdn-icons-png.flaticon.com/512/993/993928.png"
+                        }
                         alt=""
                         height="40px"
                         width="40px"
@@ -440,10 +432,7 @@ const Experience = () => {
                         style={{ paddingInline: "10px" }}
                       >
                         {" "}
-                        {format(parseISO(ex.startDate), "MMMM, yyyy")} -{" "}
-                        {ex.endDate === null || ex.endDate === undefined
-                          ? "Present"
-                          : format(parseISO(ex.endDate), "MMMM, yyyy")}
+                        {ex.startDate} - {ex.endDate}
                       </p>
                       <p
                         className="place mb-0"
@@ -610,7 +599,7 @@ const Experience = () => {
                             variant="light"
                             className=" py-1 px-2 "
                             onClick={() => {
-                              dispatch(deleteJobAction(userID, expToEdit));
+                              dispatch(deleteJobAction(expToEdit));
                               handleClose2();
                               setChanged(true);
                               // eslint-disable-next-line no-restricted-globals

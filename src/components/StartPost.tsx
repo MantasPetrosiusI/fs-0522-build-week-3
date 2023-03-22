@@ -15,7 +15,8 @@ const StartPost = (props: IProps) => {
   const [file, setFile] = useState<File | null>(null);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const apiUrl = process.env.REACT_APP_BE_URL;
+  const userId = process.env.REACT_APP_USER_ID;
   const [postText, setPostText] = useState("");
   const [newPost, setNewPost] = useState<IPost>({});
 
@@ -43,18 +44,13 @@ const StartPost = (props: IProps) => {
 
   const createNewPost = async () => {
     try {
-      let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/posts/",
-        {
-          method: "POST",
-          body: JSON.stringify({ text: postText }),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
-        }
-      );
+      let response = await fetch(`${apiUrl}/posts`, {
+        method: "POST",
+        body: JSON.stringify({ text: postText, user: userId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (response.ok) {
         let post = await response.json();
         setNewPost(post);
@@ -69,20 +65,13 @@ const StartPost = (props: IProps) => {
   const handleImageUpload = async (file: any) => {
     try {
       const formData = new FormData();
-      formData.append("post", file);
+      formData.append("image", file);
       console.log(newPost);
       console.log(newPost._id);
-      let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/posts/" + newPost._id,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
-        }
-      );
+      let response = await fetch(`${apiUrl}/posts/${newPost._id}/image`, {
+        method: "POST",
+        body: formData,
+      });
       if (response.ok) {
         console.log("You made it!");
       } else {
@@ -183,7 +172,7 @@ const StartPost = (props: IProps) => {
             <div className="image-container">
               <img src={profile.image} alt="" />
             </div>
-            <div className="d-flex flex-column">
+            <div className="d-flex flex-column align-items-start">
               <span>
                 {profile.name} {profile.surname}
               </span>
@@ -214,7 +203,7 @@ const StartPost = (props: IProps) => {
                   height="16"
                   focusable="false"
                 >
-                  <path d="M8 11L3 6h10z" fill-rule="evenodd"></path>
+                  <path d="M8 11L3 6h10z" fillRule="evenodd"></path>
                 </svg>
               </Button>
             </div>

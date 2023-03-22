@@ -3,10 +3,8 @@ import "../css/navbar.css";
 import React, { useEffect, useState } from "react";
 import { fetchMyProfileAction } from "../actions";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
-import { useParams } from "react-router-dom";
 
 const SubNav = () => {
-  const { userID } = useParams();
   const profile = useAppSelector((state) => state.myProfile.results);
 
   const dispatch = useAppDispatch();
@@ -14,9 +12,8 @@ const SubNav = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (userID !== undefined) {
-      dispatch(fetchMyProfileAction(userID));
-    }
+    dispatch(fetchMyProfileAction());
+
     const handleScroll = () => {
       if (window.pageYOffset > 100) {
         setIsVisible(true);
