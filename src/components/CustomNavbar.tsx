@@ -23,18 +23,21 @@ import { useState, useEffect } from "react";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { fetchMyProfileAction, searchProfileAction } from "../actions";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { IProfile } from "../interfaces/IProfile";
 
 const CustomNavbar = () => {
+  const { userID } = useParams();
   const profile = useAppSelector((state) => state.myProfile.results);
   const profiles = useAppSelector((state) => state.allProfiles.results);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchMyProfileAction());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (userID !== undefined) {
+      dispatch(fetchMyProfileAction(userID));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, []);
 
   const [show, setShow] = useState(false);

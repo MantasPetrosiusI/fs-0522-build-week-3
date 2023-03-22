@@ -3,8 +3,10 @@ import "../css/navbar.css";
 import React, { useEffect, useState } from "react";
 import { fetchMyProfileAction } from "../actions";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
+import { useParams } from "react-router-dom";
 
 const SubNav = () => {
+  const { userID } = useParams();
   const profile = useAppSelector((state) => state.myProfile.results);
 
   const dispatch = useAppDispatch();
@@ -12,8 +14,9 @@ const SubNav = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchMyProfileAction());
-
+    if (userID !== undefined) {
+      dispatch(fetchMyProfileAction(userID));
+    }
     const handleScroll = () => {
       if (window.pageYOffset > 100) {
         setIsVisible(true);
@@ -50,7 +53,12 @@ const SubNav = () => {
                 <img
                   src={profile.image}
                   alt="pict here"
-                  style={{ borderRadius: "50%", width: "3em", height: "3em", objectFit: "cover" }}
+                  style={{
+                    borderRadius: "50%",
+                    width: "3em",
+                    height: "3em",
+                    objectFit: "cover",
+                  }}
                 />
                 <div className="d-flex flex-column mr-auto">
                   <span style={{ fontSize: "13px" }}>
@@ -65,18 +73,27 @@ const SubNav = () => {
             </Col>
             <Col className="col-12 col-sm-6 p-1 d-flex justify-content-md-end justify-content-center ">
               <div>
-                <Button className="mr-2 badge-pill subnav-button" variant="outline-secondary">
+                <Button
+                  className="mr-2 badge-pill subnav-button"
+                  variant="outline-secondary"
+                >
                   More
                 </Button>
-                <Button className="mr-2 badge-pill subnav-button" variant="outline-primary">
+                <Button
+                  className="mr-2 badge-pill subnav-button"
+                  variant="outline-primary"
+                >
                   Add profile section
                 </Button>
-                <Button style={{ backgroundColor: "#0a66c2" }} className="badge-pill subnav-button">Open to</Button>
+                <Button
+                  style={{ backgroundColor: "#0a66c2" }}
+                  className="badge-pill subnav-button"
+                >
+                  Open to
+                </Button>
               </div>
             </Col>
           </Row>
-
-
         </Container>
       </div>
     </div>

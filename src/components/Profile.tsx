@@ -20,7 +20,8 @@ const Profile = () => {
   const [file, setFile] = useState<File | null>(null);
 
   let prof = useAppSelector((state) => state.myProfile.results);
-  let userID = prof._id;
+  //let userID = prof._id;
+  let userID = `641844deefc7760838a46517`;
   const [editprofile, setEditProfile] = useState({
     name: "",
     surname: "",
@@ -44,24 +45,20 @@ const Profile = () => {
     if (file) {
       handleImageUpload(file, userID);
     }
-    await dispatch(editMyProfileAction(editprofile));
+    await dispatch(editMyProfileAction(editprofile, userID));
     handleClose();
   };
 
-  const handleImageUpload = async (file: any, id: string) => {
+  const handleImageUpload = async (file: any, userID: string) => {
     try {
       const formData = new FormData();
-      formData.append("profile", file);
+      formData.append("image", file, userID);
 
       let response = await fetch(
-        `https://striveschool-api.herokuapp.com/api/profile/${id}/picture`,
+        process.env.REACT_APP_BE_URL + `/users/${userID}/image`,
         {
           method: "POST",
           body: formData,
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
         }
       );
       if (response.ok) {
@@ -76,7 +73,7 @@ const Profile = () => {
 
   useEffect(() => {
     handleImageUpload(file, userID);
-    dispatch(fetchMyProfileAction());
+    dispatch(fetchMyProfileAction(userID));
     setTimeout(() => {
       setChanged(false);
     }, 3000);

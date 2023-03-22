@@ -1,17 +1,20 @@
 import React, { useEffect } from "react";
 import { Card, ListGroup, ListGroupItem } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { fetchMyProfileAction } from "../actions";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 
 const LeftFeedCard = () => {
+  const { userID } = useParams();
   const profile = useAppSelector((state) => state.myProfile.results);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchMyProfileAction());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (userID !== undefined) {
+      dispatch(fetchMyProfileAction(userID));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, []);
 
   return (
@@ -22,7 +25,11 @@ const LeftFeedCard = () => {
           src="https://static.licdn.com/sc/h/55k1z8997gh8dwtihm11aajyq"
         />
         <div id="CardTinyImg" style={{ overflow: "hidden" }}>
-          <Card.Img variant="top" src={profile.image} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <Card.Img
+            variant="top"
+            src={profile.image}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
         </div>
         <Card.Body id="leftCardBody">
           <div>

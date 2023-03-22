@@ -9,14 +9,18 @@ import StartPost from "./StartPost";
 import PostCard from "./PostCard";
 import LeftFeedCard from "./LeftFeedCards";
 import FeedFooter from "./FeedFooter";
+import { useParams } from "react-router-dom";
 
 export const Feed = () => {
+  const { userID } = useParams();
   const dispatch = useAppDispatch();
 
   const [addedNewPost, setAddedNewPost] = useState(false);
   useEffect(() => {
-    dispatch(fetchMyProfileAction());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (userID !== undefined) {
+      dispatch(fetchMyProfileAction(userID));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, []);
 
   return (
