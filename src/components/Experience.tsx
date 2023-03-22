@@ -88,7 +88,7 @@ const Experience = () => {
       handleImageUpload(file, expToEdit, userID);
     }
 
-    await dispatch(editJobAction(job, expToEdit));
+    await dispatch(editJobAction(job, expToEdit, userID));
 
     handleClose2();
   };
@@ -100,18 +100,15 @@ const Experience = () => {
   ) => {
     try {
       const formData = new FormData();
-      formData.append("experience", file);
+      formData.append("expImg", file);
 
       let response = await fetch(
-        `https://striveschool-api.herokuapp.com/api/profile/${userID}/experiences/${expId}/picture`,
+        process.env.REACT_APP_BE_URL +
+          `/users/${userID}/experiences/${expId}/image`,
 
         {
           method: "POST",
           body: formData,
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
         }
       );
       console.log(response);
@@ -149,7 +146,7 @@ const Experience = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchExperienceAction());
+    dispatch(fetchExperienceAction(userID));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -158,7 +155,7 @@ const Experience = () => {
   useEffect(() => {
     handleImageUpload(file, expToEdit, userID);
     NewExpImageUpload(fileForNewExp, newexpID, userID);
-    dispatch(fetchExperienceAction());
+    dispatch(fetchExperienceAction(userID));
     setTimeout(() => {
       setChanged(false);
     }, 2000);
@@ -175,7 +172,7 @@ const Experience = () => {
     setShowDescription(false);
     setShowLoc(false);
 
-    let newexp = await dispatch(postJobAction(job));
+    let newexp = await dispatch(postJobAction(job, userID));
     newexpID = newexp._id;
     if (file) {
       NewExpImageUpload(fileForNewExp, newexpID, userID);
@@ -192,18 +189,15 @@ const Experience = () => {
   ) => {
     try {
       const formData = new FormData();
-      formData.append("experience", fileForNewExp);
+      formData.append("imgExp", fileForNewExp);
 
       let response = await fetch(
-        `https://striveschool-api.herokuapp.com/api/profile/${userID}/experiences/${newexpID}/picture`,
+        process.env.REACT_APP_BE_URL +
+          `/users/${userID}/experiences/${newexpID}/image`,
 
         {
           method: "POST",
           body: formData,
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
         }
       );
       console.log(response);
@@ -616,7 +610,7 @@ const Experience = () => {
                             variant="light"
                             className=" py-1 px-2 "
                             onClick={() => {
-                              dispatch(deleteJobAction(expToEdit));
+                              dispatch(deleteJobAction(userID, expToEdit));
                               handleClose2();
                               setChanged(true);
                               // eslint-disable-next-line no-restricted-globals

@@ -11,14 +11,12 @@ export const ADD_TO_LIKES = "ADD_TO_LIKES";
 export const REMOVE_FROM_LIKES = "REMOVE_FROM_LIKES";
 export const SEARCH_PROFILE = "SEARCH_PROFILE";
 
-const baseURL = "http://localhost:3001"
+const baseURL = "http://localhost:3001";
 
 export const fetchAllProfilesAction = () => {
   return async (dispatch: Dispatch) => {
     try {
-      let response = await fetch(
-        baseURL + "/users"
-      );
+      let response = await fetch(process.env.REACT_APP_BE_URL + `/users`);
 
       if (response.ok) {
         let profiles = await response.json();
@@ -35,17 +33,11 @@ export const fetchAllProfilesAction = () => {
   };
 };
 
-export const fetchExperienceAction = () => {
+export const fetchExperienceAction = (userID: String) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/profile/63f3fe4511d73d00137aaade/experiences",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
-        }
+        process.env.REACT_APP_BE_URL + `/users/${userID}/experiences/`
       );
 
       if (response.ok) {
@@ -63,26 +55,27 @@ export const fetchExperienceAction = () => {
   };
 };
 
-export const postJobAction = (job: {
-  role: string;
-  company: string;
-  startDate: string;
-  endDate: string;
-  stillWorkingHere: boolean;
-  description: string;
-  area: string;
-}) => {
+export const postJobAction = (
+  job: {
+    role: string;
+    company: string;
+    startDate: string;
+    endDate: string;
+    stillWorkingHere: boolean;
+    description: string;
+    area: string;
+  },
+  userID: String
+) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/profile/63f3fe4511d73d00137aaade/experiences",
+        process.env.REACT_APP_BE_URL + `/users/${userID}/experiences/`,
         {
           method: "POST",
           body: JSON.stringify(job),
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
           },
         }
       );
@@ -100,19 +93,13 @@ export const postJobAction = (job: {
   };
 };
 
-export const deleteJobAction = (id: string) => {
+export const deleteJobAction = (userID: string, expId: String) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/profile/63f3fe4511d73d00137aaade/experiences/" +
-        id,
+        process.env.REACT_APP_BE_URL + `/users/${userID}/experiences/` + expId,
         {
           method: "DELETE",
-
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
         }
       );
 
@@ -127,17 +114,13 @@ export const deleteJobAction = (id: string) => {
   };
 };
 
-export const fetchMyProfileAction = () => {
+export const fetchMyProfileAction = (userID: string) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/profile/me",
+        process.env.REACT_APP_BE_URL + `/users/${userID}`,
         {
           method: "GET",
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
         }
       );
       if (response.ok) {
@@ -171,21 +154,19 @@ export const editJobAction = (
     description: string;
     area: string;
   },
-  id: string
+  userID: string,
+  expId: string
 ) => {
   return async (dispatch: Dispatch) => {
     try {
       // console.log(id);
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/profile/63f3fe4511d73d00137aaade/experiences/" +
-        id,
+        process.env.REACT_APP_BE_URL + `/users/${userID}/experiences/` + expId,
         {
           method: "PUT",
           body: JSON.stringify(job),
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
           },
         }
       );
@@ -201,24 +182,25 @@ export const editJobAction = (
   };
 };
 
-export const editMyProfileAction = (editProfile: {
-  name: string;
-  surname: string;
-  area: string;
-  image: string;
-  title: string;
-}) => {
+export const editMyProfileAction = (
+  editProfile: {
+    name: string;
+    surname: string;
+    area: string;
+    image: string;
+    title: string;
+  },
+  userID: string
+) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/profile/",
+        process.env.REACT_APP_BE_URL + `/users/${userID}`,
         {
           method: "PUT",
           body: JSON.stringify(editProfile),
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
           },
         }
       );
@@ -234,18 +216,16 @@ export const editMyProfileAction = (editProfile: {
   };
 };
 
-export const editBioAction = (about: { bio: string }) => {
+export const editBioAction = (about: { bio: string }, userID: string) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/profile/",
+        process.env.REACT_APP_BE_URL + `/users/${userID}`,
         {
           method: "PUT",
           body: JSON.stringify(about),
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
           },
         }
       );
@@ -263,7 +243,9 @@ export const editBioAction = (about: { bio: string }) => {
 export const fetchPostsAction = () => {
   return async (dispatch: Dispatch) => {
     try {
-      let response = await fetch(baseURL + "/posts");
+      let response = await fetch(process.env.REACT_APP_BE_URL + `/posts`, {
+        method: "GET",
+      });
       if (response.ok) {
         let post = await response.json();
         // const posts = post.slice(-20) as IAllPosts[];
@@ -277,18 +259,13 @@ export const fetchPostsAction = () => {
   };
 };
 
-export const deletePost = (id: string) => {
+export const deletePost = (postID: string) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/posts/" + id,
+        process.env.REACT_APP_BE_URL + `/posts` + postID,
         {
           method: "DELETE",
-
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
         }
       );
 
@@ -316,18 +293,16 @@ export const removeFromLikesAction = (i: any) => {
   };
 };
 
-export const editPostAction = (editPost: { text: string }, id: string) => {
+export const editPostAction = (editPost: { text: string }, postID: string) => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/posts/" + id,
+        process.env.REACT_APP_BE_URL + `/posts` + postID,
         {
           method: "PUT",
           body: JSON.stringify(editPost),
           headers: {
             "Content-Type": "application/json",
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
           },
         }
       );

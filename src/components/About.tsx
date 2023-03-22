@@ -4,7 +4,10 @@ import { Pencil } from "react-bootstrap-icons";
 import { useAppSelector, useAppDispatch } from "../hooks/hooks";
 import { useState, useEffect } from "react";
 import { editBioAction, fetchMyProfileAction } from "../actions";
+import { useParams } from "react-router-dom";
 const About = () => {
+  const { userID } = useParams();
+  console.log(userID);
   const [show, setShow] = useState(false);
   const [about, setAbout] = useState({
     bio: "",
@@ -22,16 +25,20 @@ const About = () => {
   const handleSubmit = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     e.preventDefault();
 
-    dispatch(editBioAction(about));
-    setChanged(true);
-    setShow(false);
-    // eslint-disable-next-line no-restricted-globals
-    // location.reload();
+    if (userID !== undefined) {
+      dispatch(editBioAction(about, userID));
+      setChanged(true);
+      setShow(false);
+      // eslint-disable-next-line no-restricted-globals
+      // location.reload();
+    }
   };
   useEffect(() => {
-    dispatch(fetchMyProfileAction());
-    setChanged(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (userID !== undefined) {
+      dispatch(fetchMyProfileAction(userID));
+      setChanged(false);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }
   }, [changed]);
 
   return (
