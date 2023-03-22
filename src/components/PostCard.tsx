@@ -42,7 +42,9 @@ const PostCard = (props: IProps) => {
     idToEdit = id;
   };
   let prof = useAppSelector((state) => state.myProfile.results);
-  const post = useAppSelector((state) => state.posts.results);
+  const postRaw = useAppSelector((state) => state.posts.results);
+  const post = [...postRaw.posts]
+  console.log(post)
   const isLiked = useAppSelector((state) => state.likes.results);
   const dispatch = useAppDispatch();
   const [file, setFile] = useState<File | null>(null);
@@ -112,7 +114,6 @@ const PostCard = (props: IProps) => {
     <Row>
       {Array.isArray(post) && post.length > 0 ? (
         post
-          .slice(0)
           .reverse()
           .map((singlePost) => (
             <Col className="mt-3 sub-sections" xs={12} key={singlePost._id}>

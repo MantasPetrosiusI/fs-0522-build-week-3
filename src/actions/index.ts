@@ -11,17 +11,13 @@ export const ADD_TO_LIKES = "ADD_TO_LIKES";
 export const REMOVE_FROM_LIKES = "REMOVE_FROM_LIKES";
 export const SEARCH_PROFILE = "SEARCH_PROFILE";
 
+const baseURL = "http://localhost:3001"
+
 export const fetchAllProfilesAction = () => {
   return async (dispatch: Dispatch) => {
     try {
       let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/profile/",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzOTBhMDgzODFmYzAwMTNmZmZhZTEiLCJpYXQiOjE2NzY5MDY2NTYsImV4cCI6MTY3ODExNjI1Nn0.dS-mJz9dPZvOvHRQqPy2I6yqTVHPW3mZ-MKpxfhxw8I",
-          },
-        }
+        baseURL + "/users"
       );
 
       if (response.ok) {
@@ -109,7 +105,7 @@ export const deleteJobAction = (id: string) => {
     try {
       let response = await fetch(
         "https://striveschool-api.herokuapp.com/api/profile/63f3fe4511d73d00137aaade/experiences/" +
-          id,
+        id,
         {
           method: "DELETE",
 
@@ -182,7 +178,7 @@ export const editJobAction = (
       // console.log(id);
       let response = await fetch(
         "https://striveschool-api.herokuapp.com/api/profile/63f3fe4511d73d00137aaade/experiences/" +
-          id,
+        id,
         {
           method: "PUT",
           body: JSON.stringify(job),
@@ -267,20 +263,11 @@ export const editBioAction = (about: { bio: string }) => {
 export const fetchPostsAction = () => {
   return async (dispatch: Dispatch) => {
     try {
-      let response = await fetch(
-        "https://striveschool-api.herokuapp.com/api/posts/",
-        {
-          method: "GET",
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2YzZmU0NTExZDczZDAwMTM3YWFhZGUiLCJpYXQiOjE2NzY5MzQ3MjUsImV4cCI6MTY3ODE0NDMyNX0.OlrbIxHrNB0R7dnd4jirS2aUw3YiiJvvDWw2W_1I2f4",
-          },
-        }
-      );
+      let response = await fetch(baseURL + "/posts");
       if (response.ok) {
         let post = await response.json();
-        const posts = post.slice(-20) as IAllPosts[];
-        dispatch({ type: GET_POST, payload: posts });
+        // const posts = post.slice(-20) as IAllPosts[];
+        dispatch({ type: GET_POST, payload: post });
       } else {
         console.log("Error");
       }
